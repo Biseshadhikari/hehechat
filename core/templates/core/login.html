@@ -1,0 +1,37 @@
+{% extends 'core/base.html' %}
+{% block content %}
+<div class="w-full h-screen flex justify-center items-center -mt-5">
+
+    <div class="max-w-md w-full bg-white p-8 rounded shadow-lg">
+        <h2 class="text-2xl font-bold mb-6">Login</h2>
+        <form action="#" method="POST">
+            {%csrf_token%}
+            <div class="mb-4">
+                <label for="username" class="block text-gray-600 text-sm font-medium mb-2">Username</label>
+                <input type="text" id="username" name="username" class="w-full p-2 border rounded-md">
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-gray-600 text-sm font-medium mb-2">Password</label>
+                <input type="password" id="password" name="password" class="w-full p-2 border rounded-md">
+            </div>
+            <button type="submit" class="w-full bg-green-500 text-white p-2 rounded-md">Login</button>
+        </form>
+    </div>
+</div>
+
+<!-- <div class="max-w-md w-full bg-white p-8 mt-4 rounded shadow-lg">
+    <h2 class="text-2xl font-bold mb-6">Signup</h2>
+    <form action="#" method="POST">
+        <div class="mb-4">
+            <label for="signup-username" class="block text-gray-600 text-sm font-medium mb-2">Username</label>
+            <input type="text" id="signup-username" name="signup-username" class="w-full p-2 border rounded-md">
+        </div>
+        <div class="mb-4">
+            <label for="signup-password" class="block text-gray-600 text-sm font-medium mb-2">Password</label>
+            <input type="password" id="signup-password" name="signup-password" class="w-full p-2 border rounded-md">
+        </div>
+        <button type="submit" class="w-full bg-green-500 text-white p-2 rounded-md">Signup</button>
+    </form>
+</div> -->
+
+{% endblock %}

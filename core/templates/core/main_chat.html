@@ -1,7 +1,8 @@
 {% extends 'core/base.html' %}
 {% block content %}
+{%load static %}
 
-<div class="container mx-auto flex flex-col h-screen">
+<div class="container mt-10 mx-auto flex " style="height: 80vh;">
 
     <!-- Chat Container -->
     <div class="flex-1 bg-white flex">
@@ -9,26 +10,30 @@
         <!-- Sidebar -->
         <div class="bg-gray-300 p-4 flex-shrink-0 w-1/4 overflow-y-auto">
             <!-- User Profile Section -->
-            <div class="mt-4 mb-5 flex gap-3 items-center justify-center">
+            <div class="mt-4 mb-5 flex flex-col gap-3 items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                </svg>
+                  </svg>
+                  
                 <p class="font-bold"> {{ request.user.username }}</p>
+                <a href="{%url 'logout' %}" class="p-3 bg-green-500 text-gray-200 rounded-xl">logout</a>
                 <!-- Add more profile information as needed -->
             </div>
             <hr>
             <hr>
             <!-- List of contacts goes here -->
-            {% for user in users %}
-            <div class="mb-5 mt-5">
-                <div class="flex items-center space-x-2 p-3 mb-5 flex flex-row items-center rounded-xl {% if pk == user.pk %} text-white bg-green-500 {% else %} text-black {% endif %} ">
-                    <a href="{% url 'chat' user.id %}">
-                        <p class="font-semibold">{{ user.username }}</p>
-                    </a>
+            <div class="bg-gray-300 p-4  overflow-y-auto">
+                {% for user in users %}
+                <div class="mb-5 mt-5">
+                    <div class="flex items-center space-x-2  mb-5 flex flex-row items-center rounded-xl {% if username == user.username %} text-white bg-green-500 {% else %} text-black {% endif %} ">
+                        <a href="{% url 'chat' user.username %}" class="p-3">
+                            <p class="font-semibold">{{ user.username }}</p>
+                        </a>
+                    </div>
+                    <hr>
                 </div>
-                <hr>
+                {% endfor %}
             </div>
-            {% endfor %}
             <!-- Add more contacts as needed -->
         </div>
 
@@ -73,7 +78,10 @@
         </div>
     </div>
 </div>
+    {{chat_user.username|json_script:"json-username"}}
+    {{request.user.username|json_script:"json-message-username"}}
 
+    <script src="{%static 'js/chat.js' %}"></script>
 <script>
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {

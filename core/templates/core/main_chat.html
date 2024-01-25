@@ -51,30 +51,33 @@
             </div>
 
             <!-- Chat messages -->
-            <div class="overflow-y-auto mt-5 flex-1">
-                <!-- Incoming message example -->
-                <div class="flex items-start mb-4">
-                    <div class="bg-gray-300 p-3 rounded-lg">
-                        <p>Hello!</p>
-                        <p class="text-xs text-gray-500">10:30 AM</p>
-                    </div>
-                </div>
+            <div class="overflow-y-auto mt-5 flex-1" id = "messagearea">
+                {%for message in message_obj%}
+                    {%if message.sender != request.user.username%}
+                        <div class="flex items-start mb-4">
+                            <div class="bg-gray-300 p-3 rounded-lg">
+                                <p>{{message.content}}</p>
+                                <p class="text-xs text-gray-500">{{message.timestamp}}</p>
+                            </div>
+                        </div>
 
-                <!-- Outgoing message example -->
-                <div class="flex items-end justify-end mb-4">
-                    <div class="bg-green-500 p-3 rounded-lg text-white">
-                        <p>Hi there!</p>
-                        <p class="text-xs">10:32 AM</p>
-                    </div>
-                </div>
+                    {% else %}
+                        <div class="flex items-end justify-end mb-4">
+                                <div class="bg-green-500 p-3 rounded-lg text-white">
+                                    <p>{{message.content}}</p>
+                                    <p class="text-xs">{{message.timestamp}}</p>
+                                </div>
+                        </div> 
+                    {%endif%}
                 <!-- Add more messages as needed -->
+                {%endfor%}
             </div>
 
             <!-- Message input area -->
-            <div class="mt-4 flex items-center">
-                <textarea placeholder="Type your message..." class="flex-1 border p-2 rounded-md resize-none"></textarea>
-                <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-2">Send</button>
-            </div>
+                <form action="" class="mt-4 flex items-center" id = "chatMessageSubmit">
+                    <textarea placeholder="Type your message..." class="flex-1 border p-2 rounded-md resize-none" id = "messageInput"></textarea>
+                    <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-2" id = "">Send</button>
+                </form>
         </div>
     </div>
 </div>

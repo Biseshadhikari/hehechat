@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
-
+from .models import *
 
 def index(request):
     if request.user.is_authenticated:
@@ -16,7 +16,14 @@ def chat(request,username):
     if request.user.is_authenticated:
         users = User.objects.exclude(id = request.user.id)
         chat_user = User.objects.filter(username = username).first()
-        return render(request,'core/main_chat.html',{'users':users,'chat_user':chat_user,'username':username})
+        group = ''
+        if len(request.user.username)>len(username): 
+            group =f'chat_{request.user.username}-{username}'
+        else:
+            group =f'chat_{username}-{request.user.username}'   
+        message_obj = Chats.objects.filter(group = group)
+        print(message_obj)
+        return render(request,'core/main_chat.html',{'users':users,'chat_user':chat_user,'username':username,'message_obj':message_obj})
     else:
          return redirect('login')
 
@@ -31,7 +38,7 @@ def login_(request):
                 login(request, user)
                 return redirect('home')  # Redirect to your home page or any other page
             else:
-                    return render(request, 'login.html', {'error': 'Invalid credentials'})
+                    return render(request, 'core/login.html', {'error': 'Invalid credentials'})
 
         return render(request,'core/login.html')
     else:

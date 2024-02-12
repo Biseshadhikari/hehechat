@@ -1,6 +1,6 @@
 {% extends 'core/base.html' %}
 {% block content %}
-{%load static %}
+{% load static %}
 
 <div class="container mt-10 mx-auto flex " style="height: 80vh;">
 
@@ -13,10 +13,14 @@
             <div class="mt-4 mb-5 flex flex-col gap-3 items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                  </svg>
-                  
-                <p class="font-bold"> {{ request.user.username }}</p>
-                <a href="{%url 'logout' %}" class="p-3 bg-green-500 text-gray-200 rounded-xl">logout</a>
+                </svg>
+                <p class="font-bold">{{ request.user.username }}</p>
+                <a href="{% url 'logout' %}" class="p-3 bg-green-500 text-gray-200 rounded-xl">logout</a>
+                <div class="bg-gray-500 p-3 rounded-xl text-white shadow-md">
+                    <h1 class="text-md">Press <span class="text-yellow-500">Esc</span> to return to the home page</h1>
+                </div>
+                
+
                 <!-- Add more profile information as needed -->
             </div>
             <hr>
@@ -51,40 +55,41 @@
             </div>
 
             <!-- Chat messages -->
-            <div class="overflow-y-auto mt-5 flex-1" id = "messagearea">
-                {%for message in message_obj%}
-                    {%if message.sender != request.user.username%}
-                        <div class="flex items-start mb-4">
-                            <div class="bg-gray-300 p-3 rounded-lg">
-                                <p>{{message.content}}</p>
-                                <p class="text-xs text-gray-500">{{message.timestamp}}</p>
-                            </div>
-                        </div>
-
-                    {% else %}
-                        <div class="flex items-end justify-end mb-4">
-                                <div class="bg-green-500 p-3 rounded-lg text-white">
-                                    <p>{{message.content}}</p>
-                                    <p class="text-xs">{{message.timestamp}}</p>
-                                </div>
-                        </div> 
-                    {%endif%}
+            <div class="overflow-y-auto mt-5 flex-1" id="messagearea">
+                {% for message in message_obj %}
+                {% if message.sender != request.user.username %}
+                <div class="flex items-start mb-4">
+                    <div class="bg-gray-300 p-3 rounded-lg">
+                        <p>{{ message.content }}</p>
+                    </div>
+                </div>
+                {% else %}
+                <div class="flex items-end justify-end mb-4">
+                    <div class="bg-green-500 p-3 rounded-lg text-white">
+                        <p>{{ message.content }}</p>
+                    </div>
+                </div>
+                {% endif %}
                 <!-- Add more messages as needed -->
-                {%endfor%}
+                {% endfor %}
             </div>
+            
+            <!-- Typing indicator container -->
+            <div id="isTypingIndicator" class=" hidden bg-blue-100 text-blue-600 italic p-2 rounded-md"></div>
 
             <!-- Message input area -->
-                <form action="" class="mt-4 flex items-center" id = "chatMessageSubmit">
-                    <textarea placeholder="Type your message..." class="flex-1 border p-2 rounded-md resize-none" id = "messageInput"></textarea>
-                    <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-2" id = "">Send</button>
-                </form>
+            <form action="" class="mt-4 flex items-center" id="chatMessageSubmit">
+                <textarea placeholder="Type your message..." class="flex-1 border p-2 rounded-md resize-none" id="messageInput"></textarea>
+                <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-2" id="">Send</button>
+            </form>
         </div>
     </div>
 </div>
-    {{chat_user.username|json_script:"json-username"}}
-    {{request.user.username|json_script:"json-message-username"}}
 
-    <script src="{%static 'js/chat.js' %}"></script>
+{{ chat_user.username | json_script:"json-username" }}
+{{ request.user.username | json_script:"json-message-username" }}
+
+<script src="{% static 'js/chat.js' %}"></script>
 <script>
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {

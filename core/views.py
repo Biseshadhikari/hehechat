@@ -14,13 +14,14 @@ def index(request):
 
 def chat(request,username):
     if request.user.is_authenticated:
-        users = User.objects.exclude(id = request.user.id)
-        chat_user = User.objects.filter(username = username).first()
-        group = ''
-        if len(request.user.username)>len(username): 
-            group =f'chat_{request.user.username}-{username}'
-        else:
-            group =f'chat_{username}-{request.user.username}'   
+        users = User.objects.exclude(id=request.user.id)
+        chat_user = User.objects.filter(username=username).first()
+
+        # Sort the usernames alphabetically
+        usernames = sorted([request.user.username, username])
+
+        # Join the sorted usernames with a hyphen
+        group = f'chat_{"-".join(usernames)}'  
         message_obj = Chats.objects.filter(group = group)
         print(message_obj)
         return render(request,'core/main_chat.html',{'users':users,'chat_user':chat_user,'username':username,'message_obj':message_obj})

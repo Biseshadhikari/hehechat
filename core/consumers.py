@@ -7,12 +7,13 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         my_username = self.scope['user'].username
         other_username = self.scope['url_route']['kwargs']['username']
-        if len(my_username)>len(other_username):
-            self.room_name = f'{my_username}-{other_username}'
-            self.room_group_name = f'chat_{self.room_name}'
-        else:
-            self.room_name = f'{other_username}-{my_username}'
-            self.room_group_name = f'chat_{self.room_name}'
+
+        # Sort the usernames alphabetically
+        usernames = sorted([my_username, other_username])
+
+        # Join the sorted usernames with a hyphen
+        self.room_name = '-'.join(usernames)
+        self.room_group_name = f'chat_{self.room_name}'
 
             
         # print(self.room_group_name)  # Fix the room_group_name format
@@ -32,20 +33,41 @@ class PersonalChatConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message = data['message']
         username = data['username']
-        await self.save_message(username,self.room_group_name,message)
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'chat.message',  # Fix the type name
-                'message': message,
-                'username': username
-            }
-        )
+        chatType = data['type']
+        
+        if chatType == "message":
+            await self.save_message(username,self.room_group_name,message)
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat.message',  # Fix the type name
+                    'message': message,
+                    'username': username
+                }
+            )
+        else:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    'type': 'chat.typing',  # Fix the type name
+                    'message': message,
+                    'username': username
+                }
+            )
 
     async def chat_message(self, event):
         message = event['message']
         username = event['username']
         await self.send(text_data=json.dumps({
+            'type':"message",
+            'message': message,
+            'username': username
+        }))
+    async def chat_typing(self, event):
+        message = event['message']
+        username = event['username']
+        await self.send(text_data=json.dumps({
+            'type':"typing",
             'message': message,
             'username': username
         }))
